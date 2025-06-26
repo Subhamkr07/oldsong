@@ -4,1109 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shubham Song</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* CSS Reset and Basic Setup */
-        :root {
-            --primary-color: #1DB954;
-            --dark-background: #191414;
-            --secondary-background: #282828;
-            --tertiary-background: #121212;
-            --text-color: #FFFFFF;
-            --text-secondary-color: #B3B3B3;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--dark-background);
-            color: var(--text-color);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Main Layout */
-        .container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 240px;
-            background-color: #000;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            transition: width 0.3s ease;
-        }
-
-        .sidebar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 30px;
-        }
-
-        .sidebar .nav-item {
-            display: flex;
-            align-items: center;
-            color: var(--text-secondary-color);
-            padding: 12px 0;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            font-weight: 600;
-        }
-
-        .sidebar .nav-item:hover, .sidebar .nav-item.active {
-            color: var(--text-color);
-        }
-
-        .sidebar .nav-item i {
-            margin-right: 16px;
-            font-size: 20px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .sidebar .playlists {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--secondary-background);
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        
-        .sidebar .playlists h3 {
-            color: var(--text-secondary-color);
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .sidebar .playlists ul { list-style-type: none; }
-        .sidebar .playlists li {
-            padding: 8px 0;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .sidebar .playlists li:hover { color: var(--text-color); }
-
-
-        /* Main Content */
-        .main-content {
-            flex-grow: 1;
-            background: linear-gradient(to bottom, var(--secondary-background), var(--tertiary-background));
-            padding: 24px;
-            overflow-y: auto;
-            transition: margin-left 0.3s ease;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .search-bar {
-            background-color: var(--secondary-background);
-            border-radius: 50px;
-            padding: 8px 16px;
-            width: 300px;
-            display: flex;
-            align-items: center;
-        }
-        .search-bar i { color: var(--text-secondary-color); }
-        .search-bar input {
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            margin-left: 10px;
-            width: 100%;
-            outline: none;
-            font-size: 14px;
-        }
-        
-        .section-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        
-        /* Playlist Grid */
-        .playlist-grid {
-             display: grid;
-             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-             gap: 20px;
-        }
-
-        .playlist-card {
-            background-color: #181818;
-            border-radius: 8px;
-            padding: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            position: relative;
-        }
-        .playlist-card:hover { background-color: var(--secondary-background); }
-        .playlist-card img {
-            width: 100%;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-        }
-        .playlist-card .playlist-title { font-weight: 600; }
-        .playlist-card .playlist-desc {
-            color: var(--text-secondary-color);
-            font-size: 14px;
-            margin-top: 4px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        /* Song List (Table View) */
-        .song-table-container {
-             margin-top: 20px;
-        }
-        .song-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .song-table th, .song-table td {
-            text-align: left;
-            padding: 12px 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .song-table th {
-            color: var(--text-secondary-color);
-            font-size: 12px;
-            font-weight: 400;
-        }
-        .song-table tr {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .song-table tr:hover { background-color: rgba(255, 255, 255, 0.1); }
-        .song-table .song-title-cell { display: flex; align-items: center; }
-        .song-table .song-index {
-            color: var(--text-secondary-color);
-            width: 30px;
-            text-align: center;
-        }
-        .song-table .song-table-title { font-weight: 500; }
-        .song-table .song-table-artist {
-            font-size: 12px;
-            color: var(--text-secondary-color);
-            margin-top: 2px;
-        }
-
-        /* Music Player */
-        .music-player {
-            position: fixed;
-            bottom: 0; left: 0;
-            width: 100%;
-            height: 90px;
-            background-color: #181818;
-            border-top: 1px solid var(--secondary-background);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            z-index: 100;
-        }
-
-        .player-left { display: flex; align-items: center; width: 30%; }
-        .player-song-title { font-weight: 600; font-size: 14px; }
-        .player-song-artist { font-size: 12px; color: var(--text-secondary-color); }
-        .player-like { margin-left: 16px; cursor: pointer; color: var(--text-secondary-color); transition: color 0.2s; }
-        .player-like.liked { color: var(--primary-color); }
-
-        .player-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 40%;
-        }
-        .player-controls {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 8px;
-        }
-        .player-controls .control-btn {
-            background: none; border: none;
-            color: var(--text-secondary-color);
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .player-controls .control-btn:hover { color: var(--text-color); }
-        .player-controls .play-pause-btn {
-            font-size: 28px;
-            background-color: var(--text-color); color: #000;
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .player-controls .play-pause-btn:hover { transform: scale(1.05); }
-        
-        .progress-container { display: flex; align-items: center; width: 100%; gap: 8px; }
-        .progress-bar { flex-grow: 1; height: 4px; background-color: #535353; border-radius: 2px; cursor: pointer; }
-        .progress { height: 100%; width: 0; background-color: var(--primary-color); border-radius: 2px; }
-        .time { font-size: 12px; color: var(--text-secondary-color); min-width: 40px; text-align: center; }
-
-        .player-right { display: flex; align-items: center; justify-content: flex-end; width: 30%; gap: 12px; }
-        .volume-control { display: flex; align-items: center; gap: 8px; }
-        .volume-slider {
-            width: 100px;
-            -webkit-appearance: none;
-            background: #535353;
-            height: 4px;
-            border-radius: 2px;
-            cursor: pointer;
-        }
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 12px; height: 12px;
-            background: var(--primary-color);
-            cursor: pointer;
-            border-radius: 50%;
-        }
-
-        /* Waveform visualization */
-        .waveform-container {
-            position: fixed;
-            bottom: 90px; left: 0;
-            width: 100%; height: 100px;
-            pointer-events: none;
-            display: flex; justify-content: center; align-items: center;
-        }
-        #waveform { width: 50%; height: 80px; }
-        
-        /* Queue Panel */
-        .queue-panel {
-            position: fixed;
-            top: 0; right: -400px; /* Initially hidden */
-            width: 400px; height: 100%;
-            background-color: var(--secondary-background);
-            z-index: 101; padding: 24px;
-            transition: right 0.3s ease;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column;
-        }
-        .queue-panel.open { right: 0; }
-        .queue-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .queue-header h2 { font-size: 20px; }
-        #close-queue-btn { background: none; border: none; color: var(--text-secondary-color); font-size: 24px; cursor: pointer; }
-        .queue-list { flex-grow: 1; list-style: none; overflow-y: auto; }
-        .queue-list li { padding: 10px 5px; border-bottom: 1px solid #3a3a3a; display: flex; justify-content: space-between; align-items: center; }
-
-        /* Mobile Responsiveness */
-        .mobile-menu-btn {
-            display: none; background: none; border: none;
-            color: var(--text-color); font-size: 24px;
-            cursor: pointer; position: absolute;
-            top: 24px; left: 24px; z-index: 102;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-btn { display: block; }
-            .sidebar {
-                position: fixed;
-                left: -250px; width: 250px;
-                height: 100%; z-index: 101;
-                background-color: #000;
-                transition: left 0.3s ease;
-            }
-            .sidebar.open { left: 0; }
-            .main-content { margin-left: 0; padding-top: 80px; }
-            .music-player { flex-direction: column; height: auto; padding: 10px; }
-            .player-center { width: 100%; order: 1;}
-            .player-left { width: 100%; order: 2; justify-content: center; margin-top: 10px; }
-            .player-right { display: none; }
-            #waveform { display: none; }
-            .song-table-album, .song-table-genre { display: none; }
-        }
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
-
+    <div class="app">
         <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="logo">Shubham Song</div>
-            <div class="nav-links">
-                <div class="nav-item active" data-section="home"><i class="fas fa-home"></i> <span>Home</span></div>
-                <div class="nav-item" data-section="search"><i class="fas fa-search"></i> <span>Search</span></div>
-                <div class="nav-item" data-section="liked"><i class="fas fa-heart"></i> <span>Liked Songs</span></div>
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-music"></i>
+                <h1>Shubham Song</h1>
             </div>
-            <div class="playlists">
-                <h3>PLAYLISTS</h3>
-                <ul id="playlist-list-sidebar">
-                    <!-- Playlists will be dynamically added here -->
-                </ul>
-            </div>
-        </nav>
 
-        <!-- Main Content -->
-        <main class="main-content" id="main-content">
-            <div class="header">
-                 <div class="search-bar">
+            <nav class="main-nav">
+                <div class="nav-item active" data-section="home">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" data-section="search">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="Search for songs...">
+                    <span>Search</span>
+                </div>
+                <div class="nav-item" data-section="your-library">
+                    <i class="fas fa-book"></i>
+                    <span>Your Library</span>
+                </div>
+            </nav>
+
+            <div class="categories">
+                <h3>Music Categories</h3>
+                <div class="category-list">
+                    <div class="category-item active" data-category="all">
+                        <i class="fas fa-music"></i>
+                        <span>All Music</span>
+                    </div>
+                    <div class="category-item" data-category="Hindi">
+                        <i class="fas fa-music"></i>
+                        <span>Hindi</span>
+                    </div>
+                    <div class="category-item" data-category="Bhojpuri">
+                        <i class="fas fa-music"></i>
+                        <span>Bhojpuri</span>
+                    </div>
+                    <div class="category-item" data-category="Other">
+                        <i class="fas fa-music"></i>
+                        <span>Other</span>
+                    </div>
                 </div>
             </div>
 
-            <div id="home-section" class="page-section">
-                 <h1 class="section-title">Good Evening</h1>
-                 <div class="playlist-grid" id="playlist-grid-container">
-                     <!-- Playlist cards will be dynamically added here -->
-                 </div>
+            <div class="playlists">
+                <div class="playlist-header">
+                    <h3>Playlists</h3>
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="playlist-list" id="sidebarPlaylists">
+                    <div class="playlist-item" data-playlist-name="Liked Songs">
+                        <i class="fas fa-heart"></i>
+                        <span>Liked Songs</span>
+                    </div>
+                    <!-- New playlist added by JavaScript here -->
+                </div>
             </div>
-             <div id="search-section" class="page-section" style="display:none;">
-                 <h1 class="section-title">Search Results</h1>
-                 <div class="song-table-container" id="search-results-container"></div>
-            </div>
-             <div id="liked-section" class="page-section" style="display:none;">
-                 <h1 class="section-title">Liked Songs</h1>
-                 <div class="song-table-container" id="liked-songs-container"></div>
-            </div>
-             <div id="playlist-view-section" class="page-section" style="display:none;">
-                <h1 class="section-title" id="playlist-view-title">Playlist</h1>
-                <div class="song-table-container" id="playlist-songs-container"></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="hamburger-menu" id="hamburgerMenu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search for songs, artists, or albums...">
+                </div>
+                <div class="user-profile">
+                    <div class="profile-avatar"></div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Category Header -->
+                <div class="category-header">
+                    <img id="categoryImage" src="https://images.pexels.com/photos/167636/pexels-photo-167636.jpeg?auto=compress&cs=tinysrgb&w=500" alt="Category">
+                    <div class="category-info">
+                        <p class="category-type">Playlist</p>
+                        <h1 id="categoryTitle">All Music</h1>
+                        <p id="categoryDescription">Complete collection of all your favorite songs</p>
+                        <div class="category-meta">
+                            <span>Shubham Song</span>
+                            <span>•</span>
+                            <span id="trackCount">0 songs</span>
+                        </div>
+                    </div>
+                    <button class="play-all-btn" id="playAllBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+
+                <!-- Search Results -->
+                <div id="searchResults" class="search-results hidden">
+                    <h2 id="searchTitle"></h2>
+                </div>
+
+                <!-- Track List -->
+                <div class="track-list-container">
+                    <div class="track-list-header">
+                        <div class="track-number">#</div>
+                        <div class="track-title">TITLE</div>
+                        <div class="track-album">ALBUM</div>
+                        <div class="track-duration">DURATION</div>
+                    </div>
+                    <div id="trackList" class="track-list"></div>
+                </div>
+
+                <!-- No Results -->
+                <div id="noResults" class="no-results hidden">
+                    <p>No songs found matching your search.</p>
+                </div>
             </div>
         </main>
     </div>
 
     <!-- Music Player -->
-    <div class="music-player">
+    <div class="music-player" id="musicPlayer">
         <div class="player-left">
-            <div class="song-info">
-                <div class="player-song-title">-</div>
-                <div class="player-song-artist">-</div>
+            <img id="currentTrackImage" src="" alt="Current Track" class="current-track-image">
+            <div class="current-track-info">
+                <h4 id="currentTrackTitle">Select a song to start playing</h4>
+                <p id="currentTrackArtist"></p>
             </div>
-            <i id="player-like-btn" class="fas fa-heart player-like"></i>
+            <i class="fas fa-heart like-btn"></i>
         </div>
+
         <div class="player-center">
             <div class="player-controls">
-                <button class="control-btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn play-pause-btn" id="play-pause-btn"><i class="fas fa-play"></i></button>
-                <button class="control-btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                <i class="fas fa-random shuffle-btn"></i>
+                <i class="fas fa-step-backward prev-btn" id="prevBtn"></i>
+                <button class="play-pause-btn" id="playPauseBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <i class="fas fa-step-forward next-btn" id="nextBtn"></i>
+                <i class="fas fa-redo repeat-btn"></i>
             </div>
             <div class="progress-container">
-                <span class="time" id="current-time">0:00</span>
-                <div class="progress-bar" id="progress-bar">
-                    <div class="progress" id="progress"></div>
+                <span id="currentTime">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-handle" id="progressHandle"></div>
                 </div>
-                <span class="time" id="total-time">0:00</span>
+                <span id="totalTime">0:00</span>
             </div>
         </div>
+
         <div class="player-right">
-            <button class="control-btn" id="queue-btn"><i class="fas fa-list-ul"></i></button>
-            <div class="volume-control">
-                <i class="fas fa-volume-up"></i>
-                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.01" value="1">
+            <i class="fas fa-volume-up"></i>
+            <div class="volume-container">
+                <input type="range" id="volumeSlider" min="0" max="100" value="100" class="volume-slider">
             </div>
         </div>
     </div>
-    
-    <!-- Waveform Visualizer -->
-    <div class="waveform-container"><canvas id="waveform"></canvas></div>
 
-    <!-- Queue Panel -->
-    <div class="queue-panel" id="queue-panel">
-        <div class="queue-header">
-            <h2>Queue</h2>
-            <button id="close-queue-btn"><i class="fas fa-times"></i></button>
+    <!-- Full-screen Music Player Overlay -->
+    <div class="full-screen-player-overlay" id="fullScreenPlayer">
+        <div class="full-screen-player-header">
+            <i class="fas fa-chevron-down close-full-player-btn" id="closeFullScreenPlayerBtn"></i>
+            <div class="full-screen-track-info">
+                <h4>PLAYING FROM ALBUM</h4>
+                <p id="fullPlayerAlbum">Album Name</p>
+            </div>
+            <i class="fas fa-ellipsis-h"></i>
         </div>
-        <ul class="queue-list" id="queue-list"></ul>
+
+        <div class="full-screen-player-content">
+            <img id="fullTrackImage" src="" alt="Album Art" class="full-track-image">
+            <div class="full-track-details">
+                <h2 id="fullTrackTitle">Song Title</h2>
+                <p id="fullTrackArtist">Artist Name</p>
+            </div>
+
+            <div class="full-player-progress-container">
+                <span id="fullCurrentTime">0:00</span>
+                <div class="full-progress-bar" id="fullProgressBar">
+                    <div class="full-progress-fill" id="fullProgressFill"></div>
+                    <div class="full-progress-handle" id="fullProgressHandle"></div>
+                </div>
+                <span id="fullTotalTime">0:00</span>
+            </div>
+
+            <div class="full-player-controls">
+                <i class="fas fa-random full-shuffle-btn"></i>
+                <i class="fas fa-step-backward full-prev-btn" id="fullPrevBtn"></i>
+                <button class="full-play-pause-btn" id="fullPlayPauseBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <i class="fas fa-step-forward full-next-btn" id="fullNextBtn"></i>
+                <i class="fas fa-redo full-repeat-btn"></i>
+            </div>
+
+            <div class="full-player-volume-container">
+                <i class="fas fa-volume-down"></i>
+                <input type="range" id="fullVolumeSlider" min="0" max="100" value="100" class="full-volume-slider">
+                <i class="fas fa-volume-up"></i>
+            </div>
+        </div>
     </div>
-    
-    <audio id="audio-player" crossOrigin="anonymous"></audio>
 
-    <script type="module">
-        // --- DATA ---
-        // This data is now self-contained within the app.
-        const rawSongList = [
-            {"title": "AAYE HO MERI ZINDAGI", "url": "https://archive.org/download/heartOfABrokenSoul/AAYE%20HO%20MERI%20ZINDAGI%20.mp3"},
-            {"title": "AB TERE BIN JEE LENGE HUM - K SANU", "url": "https://archive.org/download/heartOfABrokenSoul/AB%20TERE%20BIN%20JEE%20LENGE%20HUM%20-%20K%20SANU.MP3"},
-            {"title": "AEY MERE", "url": "https://archive.org/download/heartOfABrokenSoul/AEY%20MERE%20.mp3"},
-            {"title": "Aa Bhi Ja Mere Mehermaan - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Aa%20Bhi%20Ja%20Mere%20Mehermaan%20-%20Atif%20Aslam%20-%20128Kbps%20%5BSongs.PK%5D.mp3"},
-            {"title": "Aaiye Meharban - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aaiye%20Meharban%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aaiyo Rama Hath (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aaiyo%20Rama%20Hath%28Djjohal.Com%29.mp3"},
-            {"title": "Aaj Phir Tum Se Pyar Aya He", "url": "https://archive.org/download/heartOfABrokenSoul/Aaj%20Phir%20Tum%20Se%20Pyar%20Aya%20He.mp3"},
-            {"title": "Aaj Phir Video Song", "url": "https://archive.org/download/heartOfABrokenSoul/Aaj%20Phir%20Video%20Song.mp3"},
-            {"title": "Aakhir Tumhen Aana Hai - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aakhir%20Tumhen%20Aana%20Hai%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aanewali Hain Milan Ki - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aanewali%20Hain%20Milan%20Ki%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aankh Hai Bhari Bhari", "url": "https://archive.org/download/heartOfABrokenSoul/Aankh%20Hai%20Bhari%20Bhari.mp3"},
-            {"title": "Aankhon Ki Gustakhiyan Maaf Ho - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aankhon%20Ki%20Gustakhiyan%20Maaf%20Ho%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aankhon Mein Base Ho Tum (Duet)", "url": "https://archive.org/download/heartOfABrokenSoul/Aankhon%20Mein%20Base%20Ho%20Tum%20%28Duet%29.mp3"},
-            {"title": "Aankhon Mein Kya - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aankhon%20Mein%20Kya%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aankhon Mein Teri", "url": "https://archive.org/download/heartOfABrokenSoul/Aankhon%20Mein%20Teri.mp3"},
-            {"title": "Aankhon Se Tune Kya Keh Diya - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aankhon%20Se%20Tune%20Kya%20Keh%20Diya%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aao Naa & - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aao%20Naa%20%26amp%3B%20%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aaoge Jab Tum [CompGeek]", "url": "https://archive.org/download/heartOfABrokenSoul/Aaoge%20Jab%20Tum.mp3"},
-            {"title": "Aap Ki Ankhon Mein Kuch - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aap%20Ki%20Ankhon%20Mein%20Kuch%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aap Ki Nazron Ne Samjha(Mr-Jatt.com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aap%20Ki%20Nazron%20Ne%20Samjha.mp3"},
-            {"title": "Aap Ki Nazron Ne Samjhaa ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Aap%20Ki%20Nazron%20Ne%20Samjhaa-Lata%20Mangeshkar.mp3"},
-            {"title": "Aap Ki Yaad Aaye To @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Aap%20Ki%20Yaad%20Aaye%20To%20%40%20SongsDL.com.mp3"},
-            {"title": "Aap Mujhe Achche", "url": "https://archive.org/download/heartOfABrokenSoul/Aap%20Mujhe%20Achche.mp3"},
-            {"title": "Aapke Pyaar Mein (Mr-Punjab.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aapke%20Pyaar%20Mein%20-%20Alka%20Yagnik.mp3"},
-            {"title": "Aapko Pehle Bhi Kahin Dekha Hai @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Aapko%20Pehle%20Bhi%20Kahin%20Dekha%20Hai%20%40%20SongsDL.com.mp3"},
-            {"title": "Aas Paas Khuda (Unplugged) - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Aas%20Paas%20Khuda%20%28Unplugged%29.mp3"},
-            {"title": "Aas Paas Khuda - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Aas%20Paas%20Khuda.mp3"},
-            {"title": "Aasan Nahin Yahan - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Aasan%20Nahin%20Yahan.mp3"},
-            {"title": "Aate Jate [Title Song ]", "url": "https://archive.org/download/heartOfABrokenSoul/Aate%20Jate%20%5BTitle%20Song%20%5D%20.mp3"},
-            {"title": "Aaya Mausam", "url": "https://archive.org/download/heartOfABrokenSoul/Aaya%20Mausam%20.mp3"},
-            {"title": "Aaya Tere Dar Par (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aaya%20Tere%20Dar%20Par%28Djjohal.Com%29.mp3"},
-            {"title": "Aayat", "url": "https://archive.org/download/heartOfABrokenSoul/Aayat.mp3"},
-            {"title": "Aaye Ho Meri Zindagi Mein - Female - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aaye%20Ho%20Meri%20Zindagi%20Mein%20-%20Female%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aayee Pades Se (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aayee%20Pades%20Se%28Djjohal.Com%29.mp3"},
-            {"title": "Aankhen Band Karke Jo Ek ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Aayega%20Maza%20Ab%20Barsaat%20Ka-Alka%20Yagnik.mp3"},
-            {"title": "Aayegi Har Pal Tujhe Meri Yaad - MyMp3Song.com", "url": "https://archive.org/download/heartOfABrokenSoul/Aayegi%20Har%20Pal%20Tujhe%20Meri%20Yaad%28MyMp3Song%29.mp3"},
-            {"title": "Aayi Re Milan Ki Raat (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aayi%20Re%20Milan%20Ki%20Raat%28Djjohal.Com%29.mp3"},
-            {"title": "Aayi Re Milan Rut (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aayi%20Re%20Milan%20Rut%28Djjohal.Com%29.mp3"},
-            {"title": "Abhi To Mohabbat Ka Aghaz Hai - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Abhi%20To%20Mohabbat%20Ka%20Aghaz%20Hai%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Achha Lagta Hai - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Achha%20Lagta%20Ha.mp3"},
-            {"title": "Adayein Bhi Hain @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Adayein%20Bhi%20Hain%20%40%20SongsDL.com.mp3"},
-            {"title": "Adhoore", "url": "https://archive.org/download/heartOfABrokenSoul/Adhoore.mp3"},
-            {"title": "Ae Ajnabi", "url": "https://archive.org/download/heartOfABrokenSoul/Ae%20Ajnabi.mp3"},
-            {"title": "Ae Humnava - Hamari Adhuri Kahani", "url": "https://archive.org/download/heartOfABrokenSoul/Ae%20Humnava%20-%20Hamari%20Adhuri%20Kahani.mp3"},
-            {"title": "Ae Nazneen Suno Na (Abhijeet)", "url": "https://archive.org/download/heartOfABrokenSoul/Ae%20Nazneen%20Suno%20Na%20%28Abhijeet%29.mp3"},
-            {"title": "Aey Mere Humsafar", "url": "https://archive.org/download/heartOfABrokenSoul/Aey%20Mere%20Humsafar.mp3"},
-            {"title": "Agar Tum Mil Jao - Shreta Ghoshal", "url": "https://archive.org/download/heartOfABrokenSoul/Agar%20Tum%20Mil%20Jao%20-%20Shreta%20Ghoshal.mp3"},
-            {"title": "Agar Zindagi Ho - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Agar%20Zindagi%20Ho%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aisa Deewana @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Aisa%20Deewana.mp3"},
-            {"title": "Aisa Des Hai Mera (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aisa%20Des%20Hai%20Mera%28Djjohal.Com%29.mp3"},
-            {"title": "Aisa Kyon Hota Hai (SongsMp3.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aisa%20Kyon%20Hota%20Hai.mp3"},
-            {"title": "Pehli Baar Dil Yun - MyMP3Singer.net", "url": "https://archive.org/download/heartOfABrokenSoul/Aisa%20Lag%20Raha%20Hai%20Jaise%20Pyaar%20Hua%20Hai-%28MyMp3Singer.net%29.mp3"},
-            {"title": "Aise Na Mujhe Tum Dekho (The Unwind Mix) - www.9xTunes.Com", "url": "https://archive.org/download/heartOfABrokenSoul/Aise%20Na%20Mujhe%20Tum%20Dekho%20%28The%20Unwind%20Mix%29%20-%20Ash%20King%20%28320kbps%29.mp3"},
-            {"title": "Aaja Nachle", "url": "https://archive.org/download/heartOfABrokenSoul/Aisi%20chale%20jab%20hawa.mp3"},
-            {"title": "Aiyo Rama (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aiyo%20Rama%28Djjohal.Com%29.mp3"},
-            {"title": "Ajib Dastan Hai Yeh - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ajib%20Dastan%20Hai%20Yeh%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Akhiyaan Milaoon Kabhi - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Akhiyaan%20Milaoon%20Kabhi%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ankhiyon Ke Jharokhon Se", "url": "https://archive.org/download/heartOfABrokenSoul/Ankhiyon%20Ke%20Jharokhon%20Se.mp3"},
-            {"title": "Apnaa Mujhe Tu Lagaa ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Apnaa%20Mujhe%20Tu%20Lagaa-Sonu%20Nigam%5B320%5D__Raag.Me__.mp3"},
-            {"title": "Ashq Na Ho", "url": "https://archive.org/download/heartOfABrokenSoul/Ashq%20Na%20Ho.mp3"},
-            {"title": "Aur Aahista Kijiye Baatein-Pankaj Udhas", "url": "https://archive.org/download/heartOfABrokenSoul/Aur%20Aahista%20Kijiye%20Baatein-Pankaj%20Udhas.mp3"},
-            {"title": "Awarapan Banjarapan", "url": "https://archive.org/download/heartOfABrokenSoul/Awarapan%20Banjarapan.mp3"},
-            {"title": "Aye Dil Bata", "url": "https://archive.org/download/heartOfABrokenSoul/Aye%20Dil%20Bata.mp3"},
-            {"title": "Aye Kaash Kabhi", "url": "https://archive.org/download/heartOfABrokenSoul/Aye%20Kaash%20Kabhi.mp3"},
-            {"title": "Tauba Tumhare Ye Ishare (Chalte Chalte) ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Aye%20Mere%20Humsafar%20%28Baazigar%29-Various__Raag.Me__.mp3"},
-            {"title": "Pyar Ye Jaane Kaisa Hai ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Aye%20Mere%20Humsafar-Various__Raag.Me__.mp3"},
-            {"title": "Aye Saawan Baras Zara - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Aye%20Saawan%20Baras%20Zara%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Aye Zindagi Gale Lagaa Le", "url": "https://archive.org/download/heartOfABrokenSoul/Aye%20Zindagi%20Gale%20Lagaa%20Le.mp3"},
-            {"title": "Aye_meri_zindgi(female)_(Saaya)(bossmobi.com)", "url": "https://archive.org/download/heartOfABrokenSoul/Aye_meri_zindgi%28female%29_%28Saaya%29.mp3"},
-            {"title": "BAHUT PYAR", "url": "https://archive.org/download/heartOfABrokenSoul/BAHUT%20PYAR%20.mp3"},
-            {"title": "Baadalon Mein Chup Raha Chand - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Baadalon%20Mein%20Chup%20Raha%20Chand%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Baahon Ke Darmiyan-Hariharan", "url": "https://archive.org/download/heartOfABrokenSoul/Baahon%20Ke%20Darmiyan-Hariharan.mp3"},
-            {"title": "Baarish (Yaariyan)", "url": "https://archive.org/download/heartOfABrokenSoul/Baarish%20%28Yaariyan%29.mp3"},
-            {"title": "Baarish - DJMaza.Life", "url": "https://archive.org/download/heartOfABrokenSoul/Baarish%20-%20Half%20Girlfriend%20%20DJMaza.Life%20.mp3"},
-            {"title": "Baas Tum Bhi Ho", "url": "https://archive.org/download/heartOfABrokenSoul/Baas%20Tum%20Bhi%20Ho.mp3"},
-            {"title": "Baatein Ye Kabhi Na", "url": "https://archive.org/download/heartOfABrokenSoul/Baatein%20Ye%20Kabhi%20Na.mp3"},
-            {"title": "Baba Mere Ye Jwani (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Baba%20Mere%20Ye%20Jwani%28Djjohal.Com%29.mp3"},
-            {"title": "Badal Jo Barase To - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Badal%20Jo%20Barase%20To%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Badal Yun Garajta Hai (RoyalJatt.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Badal%20Yun%20Garajta%20Hai.mp3"},
-            {"title": "Bahara - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Bahara%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Bahon Ke Darmiyan (The Unwind Mix) - www.9xTunes.Com", "url": "https://archive.org/download/heartOfABrokenSoul/Bahon%20Ke%20Darmiyan%20%28The%20Unwind%20Mix%29%20-%20Raman%20Mahadevan%2C%20Anwesshaa%20%28320kbps%29.mp3"},
-            {"title": "Bahon Mein Chale Aao - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Bahon%20Mein%20Chale%20Aao%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Bahon Mein Chale Aao-Lata Mangeshkar", "url": "https://archive.org/download/heartOfABrokenSoul/Bahon%20Mein%20Chale%20Aao-Lata%20Mangeshkar.mp3"},
-            {"title": "Track08", "url": "https://archive.org/download/heartOfABrokenSoul/Bahon%20Mein%20Chali%20Aao-new.mp3"},
-            {"title": "022 Bahut Khoobsurat ho(khoob", "url": "https://archive.org/download/heartOfABrokenSoul/Bahut%20Khoobsurat%20ho%28khoobsoorat%29.mp3"},
-            {"title": "Bahut Khoobsurat Ghazal RaagSong.Com", "url": "https://archive.org/download/heartOfABrokenSoul/Bahut%20Khoobsurat-Ghazal.mp3"},
-            {"title": "Bahut Pyar Karte Hai - Female", "url": "https://archive.org/download/heartOfABrokenSoul/Bahut%20Pyar%20Karte%20Hai%20-%20Female%20-%20320Kbps.mp3"},
-            {"title": "Bahut Pyar Karte Hain", "url": "https://archive.org/download/heartOfABrokenSoul/Bahut%20Pyar%20Karte%20Hain.mp3"},
-            {"title": "Bahut Pyar Karte Hain (RoyalJatt.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Bahut_Pyar_Karte_Hain-Alka_Yagnik-www.Mp3Mad.Com.mp3"},
-            {"title": "Bairiyaa - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Bairiyaa%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ban Me Titli Ude", "url": "https://archive.org/download/heartOfABrokenSoul/Ban%20Me%20Titli%20Ude.mp3"},
-            {"title": "Barsaat Ke Din Aaye ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Barsaat%20Ke%20Din%20Aaye-Kumar%20SanuRaag.Me.mp3"},
-            {"title": "Barsaat Ke Mausam Mein - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Barsaat%20Ke%20Mausam%20Mein%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Barso Re - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Barso%20Re%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Bas Main Aur Tu", "url": "https://archive.org/download/heartOfABrokenSoul/Bas%20Main%20Aur%20Tu.mp3"},
-            {"title": "Be Intehaan - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Be%20Intehaan%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Beimaan Piya Re (Mp3Mad.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Beimaan_Piya_Re-Alka_Yagnik%20www.Mp3MaD.Com%20.mp3"},
-            {"title": "Bhaage Re Mann - Chameli @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Bhaage%20Re%20Mann%20-%20Chameli%20%40%20SongsDL.com.mp3"},
-            {"title": "Bharo maang meri bharo", "url": "https://archive.org/download/heartOfABrokenSoul/Bharo%20maang%20meri%20bharo%28sabse%20bada%20khiladi%29.mp3"},
-            {"title": "Bheegey Hont - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Bheegey%20Hont%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Bheegi Bheegi Raaton Mein", "url": "https://archive.org/download/heartOfABrokenSoul/Bheegi%20Bheegi%20Raaton%20Mein%20Aao%20Naa.mp3"},
-            {"title": "Bheegi Huyee Hai Raat - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Bheegi%20Huyee%20Hai%20Raat%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Bheegi Huyee Hain Raat ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Bheegi%20Huyee%20Hain%20Raat-Kumar%20Sanu__Raag.Me__.mp3"},
-            {"title": "Bheegi Bheegi Raaton Mein (Mp3Mad.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Bheegi_Bheegi_Raaton_Mein-Leslie_Lewis%20www.Mp3MaD.Com%20.mp3"},
-            {"title": "Bholi Si Surat - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Bholi%20Si%20Surat%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Bhula Dena - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Bhula%20Dena.mp3"},
-            {"title": "Bhula Denge Tumko Sanam ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Bhula%20Denge%20Tumko%20Sanam-Sonu%20NigamRaag.Me.mp3"},
-            {"title": "Billo Rani", "url": "https://archive.org/download/heartOfABrokenSoul/Billo%20Rani%20-%20Anand%20Raaj%20Anand%2C%20Richa%20sharma%20%40%20Fmw11.com.mp3"},
-            {"title": "Bin Tere - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Bin%20Tere.mp3"},
-            {"title": "Hona Tha Pyar - www.DJMaza.Com", "url": "https://archive.org/download/heartOfABrokenSoul/Bol%20-%20Hona%20Tha%20Pyar%20.mp3"},
-            {"title": "Bol Na Halke", "url": "https://archive.org/download/heartOfABrokenSoul/Bol%20Na%20Halke.mp3"},
-            {"title": "Chaaha Hai Tujhko - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chaaha%20Hai%20Tujhko%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Chadariya Jhini Re Jhini-Various", "url": "https://archive.org/download/heartOfABrokenSoul/Chadariya%20Jhini%20Re%20Jhini-Various.mp3"},
-            {"title": "Chahat Na Hoti (RaagJatt.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Chahat%20Na%20Hoti%20%28RaagJatt.com%29.mp3"},
-            {"title": "Chahoon Bhi Toh", "url": "https://archive.org/download/heartOfABrokenSoul/Chahoon%20Bhi%20Toh.mp3"},
-            {"title": "Chahun Main Ya Naa-Palak Muchhal", "url": "https://archive.org/download/heartOfABrokenSoul/Chahun%20Main%20Ya%20Naa-Palak%20Muchhal.mp3"},
-            {"title": "Chahun Main Ya Naa - www.Songs.PK", "url": "https://archive.org/download/heartOfABrokenSoul/Chahun%20Main%20Ya%20Naa.mp3"},
-            {"title": "Chal Wahan Jaate Hain(Mr-Jatt.com)", "url": "https://archive.org/download/heartOfABrokenSoul/Chal%20Wahan%20Jaate%20Hain.mp3"},
-            {"title": "Chalne Lagi Hain Hawayein (RoyalJatt.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Chalne_Lagi_Hain_Hawayein-Abhijeet-www.Mp3Mad.Com.mp3"},
-            {"title": "Chalo Ek Baar Phir Se-Abhijeet", "url": "https://archive.org/download/heartOfABrokenSoul/Chalo%20Ek%20Baar%20Phir%20Se-Abhijeet.mp3"},
-            {"title": "Chalte Chalte - Unwind Version - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chalte%20Chalte%20-%20Unwind%20Version%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Cham Cham", "url": "https://archive.org/download/heartOfABrokenSoul/Cham%20Cham.mp3"},
-            {"title": "Chand Chhupa", "url": "https://archive.org/download/heartOfABrokenSoul/Chand%20Chhupa.mp3"},
-            {"title": "Chand Se Parda Kijiye ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Chand%20Se%20Parda%20Kijiye-Kumar%20Sanu__Raag.Me__.mp3"},
-            {"title": "Chand Taron Mein Sad RaagSong.Com", "url": "https://archive.org/download/heartOfABrokenSoul/Chand%20Taron%20Mein-Sad.mp3"},
-            {"title": "Chandaniya (Lori Lori) - www.DJMaza.Com", "url": "https://archive.org/download/heartOfABrokenSoul/Chandaniya%20%28Lori%20Lori%29.MP3"},
-            {"title": "Chandi Jaisa Rang Hai Tera-Pankaj Udhas", "url": "https://archive.org/download/heartOfABrokenSoul/Chandi%20Jaisa%20Rang%20Hai%20Tera-Pankaj%20Udhas.mp3"},
-            {"title": "raat", "url": "https://archive.org/download/heartOfABrokenSoul/Chandni%20raat.mp3"},
-            {"title": "Channa Mereya ::www.RaagTune.com::", "url": "https://archive.org/download/heartOfABrokenSoul/Channa%20Mereya.mp3"},
-            {"title": "Chaudhvin Ka Chand Ho - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chaudhvin%20Ka%20Chand%20Ho%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Chhai Chhapa Chhai - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chhai%20Chhapa%20Chhai%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Chham Cham Payaliya (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Chham%20Cham%20Payaliya%28Djjohal.Com%29.mp3"},
-            {"title": "035 Chhota sa ghar(darr)", "url": "https://archive.org/download/heartOfABrokenSoul/Chhota%20sa%20ghar%28darr%29.mp3"},
-            {"title": "Chhukar Mere Man Ko (The Unwind Mix) - DJMaza.Info", "url": "https://archive.org/download/heartOfABrokenSoul/Chhukar%20Mere%20Man%20Ko%20%28The%20Unwind%20Mix%29%20%5BDJMaza.Info%5D.mp3"},
-            {"title": "Chhupana Bhi Nahin Aata - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chhupana%20Bhi%20Nahin%20Aata%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Choodi Jo Khanke (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Choodi%20Jo%20Khanke%28Djjohal.Com%29.mp3"},
-            {"title": "Choodi Maza Na Degi", "url": "https://archive.org/download/heartOfABrokenSoul/Choodi%20Maza%20Na%20Degi%20.mp3"},
-            {"title": "Choori jo Khanki (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Choori%20jo%20Khanki%28Djjohal.Com%29.mp3"},
-            {"title": "Chori Chori Chupke Se", "url": "https://archive.org/download/heartOfABrokenSoul/Chori%20Chori%20Chupke%20Se.mp3"},
-            {"title": "Chori Chori Dil Tera ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Chori%20Chori%20Dil%20Tera-Kumar%20Sanu__Raag.Me__.mp3"},
-            {"title": "Chori Chori Jab Nazrein Mili - Part 1 - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chori%20Chori%20Jab%20Nazrein%20Mili%20-%20Part%201%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Chori Kiya Re Jiya", "url": "https://archive.org/download/heartOfABrokenSoul/Chori%20Kiya%20Re%20Jiya.mp3"},
-            {"title": "Chun Liya Maine Tujhe - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chun%20Liya%20Maine%20Tujhe%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Chupke Se Koi - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Chupke%20Se%20Koi%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Chupke - 2 Sakhiyon Se @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Chupke%20chupke%20Sakhiyon%20Se%20.mp3"},
-            {"title": "Chura liya hai", "url": "https://archive.org/download/heartOfABrokenSoul/Chura%20liya%20hai.mp3"},
-            {"title": "DHEERE DHEERE SE MERI - ANURADHA & K SANU", "url": "https://archive.org/download/heartOfABrokenSoul/DHEERE%20DHEERE%20SE%20MERI%20-%20ANURADHA%20%26%20K%20SANU.MP3"},
-            {"title": "DHOLNA", "url": "https://archive.org/download/heartOfABrokenSoul/DHOLNA%20.mp3"},
-            {"title": "DIL KA KYA KASOOR", "url": "https://archive.org/download/heartOfABrokenSoul/DIL%20KA%20KYA%20KASOOR.mp3"},
-            {"title": "DIL KO", "url": "https://archive.org/download/heartOfABrokenSoul/DIL%20KO%20Tumse%20Pyar%20Hua.mp3"},
-            {"title": "DIL KYA KARE - Pyar Ke Liye", "url": "https://archive.org/download/heartOfABrokenSoul/DIL%20KYA%20KARE%20-%20Pyar%20Ke%20Liye.mp3"},
-            {"title": "01", "url": "https://archive.org/download/heartOfABrokenSoul/DIL%20LUTTEYA.mp3"},
-            {"title": "Dagabaaz Re", "url": "https://archive.org/download/heartOfABrokenSoul/Dagabaaz%20Re.mp3"},
-            {"title": "Daiya Daiya Daiya Re", "url": "https://archive.org/download/heartOfABrokenSoul/Daiya%20Daiya%20Daiya%20Re.mp3"},
-            {"title": "Dance Pe Chance (SongsMp3.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Dance-Pe-Chance.mp3"},
-            {"title": "Dancing Jodi (SongsMp3.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Dancing-Jodi.mp3"},
-            {"title": "Dard Dilo Ke", "url": "https://archive.org/download/heartOfABrokenSoul/Dard%20Dilo%20Ke.mp3"},
-            {"title": "De De Pyar De - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/De%20De%20Pyar%20De%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Deewana Kar Raha Hai", "url": "https://archive.org/download/heartOfABrokenSoul/Deewana%20Kar%20Raha%20Hai.mp3"},
-            {"title": "Deewana Me Hau Deewana Tera", "url": "https://archive.org/download/heartOfABrokenSoul/Deewana%20Me%20Hau%20Deewana%20Tera.mp3"},
-            {"title": "Dekha Hai Teri Aankhon Ko ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dekha%20Hai%20Teri%20Aankhon%20Ko-Aryans__Raag.Me__.mp3"},
-            {"title": "Dekha Tujhe Toh - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Dekha%20Tujhe%20Toh%20%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Dekho Na Zara Dekho Na", "url": "https://archive.org/download/heartOfABrokenSoul/Dekho%20Na%20Zara%20Dekho%20Na.mp3"},
-            {"title": "Dekho Na-Sonu Nigam", "url": "https://archive.org/download/heartOfABrokenSoul/Dekho%20Na-Sonu%20Nigam.mp3"},
-            {"title": "Dekho Zara Dekho - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Dekho%20Zara%20Dekho%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Dekhte Dekhte @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Dekhte%20Dekhte.mp3"},
-            {"title": "Dhak Dhak Dil Mera Karne", "url": "https://archive.org/download/heartOfABrokenSoul/Dhak%20Dhak%20Dil%20Mera%20Karne.mp3"},
-            {"title": "Dheere Dheere Aap Mere ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dheere%20Dheere%20Aap%20Mere-Sadhna%20Sargam.mp3"},
-            {"title": "Dheere Dheere Se Meri Zindagi Mein Aana", "url": "https://archive.org/download/heartOfABrokenSoul/Dheere%20Dheere%20Se%20Meri%20Zindagi%20Mein%20Aana.mp3"},
-            {"title": "Dheere Dheere Se Meri", "url": "https://archive.org/download/heartOfABrokenSoul/Dheere%20Dheere%20Se%20Meri.mp3"},
-            {"title": "Dheere Dheere Se", "url": "https://archive.org/download/heartOfABrokenSoul/Dheere%20Dheere%20Se.mp3"},
-            {"title": "Dholna", "url": "https://archive.org/download/heartOfABrokenSoul/Dholna.mp3"},
-            {"title": "Dhoop Ke Makaan Sa", "url": "https://archive.org/download/heartOfABrokenSoul/Dhoop%20Ke%20Makaan%20Sa.mp3"},
-            {"title": "Dhuaan", "url": "https://archive.org/download/heartOfABrokenSoul/Dhuaan.mp3"},
-            {"title": "Dil Aaj Kal kk", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Aaj%20Kal%20kk.mp3"},
-            {"title": "Dil Aaj Kal sona mohapatra", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Aaj%20Kal%20sona%20mohapatra%20.mp3"},
-            {"title": "Dil Aaj Kal ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Aaj%20Kal-K%20K%20320%20Raag.Me.mp3"},
-            {"title": "Dil Dara Dil Dara", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Dara%20Dil%20Dara.mp3"},
-            {"title": "Dil De Diya Hai", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20De%20Diya%20Hai.mp3"},
-            {"title": "Dil Deewana", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Deewana.mp3"},
-            {"title": "Dil Dil Dil", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Dil%20Dil.mp3"},
-            {"title": "Dil Hai Ki Manta Nehi", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Hai%20Ki%20Manta%20Nehi.mp3"},
-            {"title": "Dil Ibadat", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ibadat.mp3"},
-            {"title": "Dil Jigar Nazar Kya Hai - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Jigar%20Nazar%20Kya%20Hai%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Dil Ka Aalam @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ka%20Aalam.mp3"},
-            {"title": "Dil Ka Haal Sune Dilwala", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ka%20Haal%20Sune%20Dilwala.mp3"},
-            {"title": "Dil Ka Kya Karein Saheb ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ka%20Kya%20Karein%20Saheb-Kavita%20KrishnamurthyRaag.Me.mp3"},
-            {"title": "Dil Ka Kya Karein Saheb ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ka%20Kya%20Karein%20Saheb-Kavita%20Krishnamurthy__Raag.Me__.mp3"},
-            {"title": "Dil Ke Badle Sanam @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ke%20Badle%20Sanam.mp3"},
-            {"title": "Dil Kehta Hai Chal Unse", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Kehta%20Hai%20Chal%20Unse.mp3"},
-            {"title": "Dil Ki Tanhai Ko", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ki%20Tanhai%20Ko.mp3"},
-            {"title": "Dil Kya Kare (The Unwind Mix) - DJMaza.Info", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Kya%20Kare%20%28The%20Unwind%20Mix%29%20%5BDJMaza.Info%5D.mp3"},
-            {"title": "Dil Kya Kare Jab Kisi Se", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Kya%20Kare%20Jab%20Kisi%20Se.mp3"},
-            {"title": "Dil Kyun Yeh Mera (Kites)", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Kyun%20Yeh%20Mera%20%28Kites%29.mp3"},
-            {"title": "Dil Kyun Yeh Mera Shor Kare", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Kyun%20Yeh%20Mera%20Shor%20Kare.mp3"},
-            {"title": "Dil Laga Liya Maine", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Laga%20Liya%20Maine.mp3"},
-            {"title": "Dil Mere Tu Deewana Hai ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Mere%20Tu%20Deewan%20Hai%20-%20Female-Suchitra%20Krishnamurthy__Raag.Me__.mp3"},
-            {"title": "Dil Mere Tu Deewana Hai ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Mere%20Tu%20Deewana%20Hai-Kumar%20Sanu__Raag.Me__.mp3"},
-            {"title": "Dil Ne Yeh Kaha Hai", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ne%20Yeh%20Kaha%20Hai.mp3"},
-            {"title": "Dil Ne Yeh Kaha Hain Dil Se - DownloadMing.SE", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ne%20Yeh%20Kaha%20Hain%20Dil%20Se%20-%20DownloadMing.SE.mp3"},
-            {"title": "Dil Ne Yeh Kaha Hain Dil Se - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ne%20Yeh%20Kaha%20Hain%20Dil%20Se%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Dil Ne Yeh Kaha Hain Dil Se ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ne%20Yeh%20Kaha%20Hain%20Dil%20Se-Sonu%20Nigam__Raag.Me__.mp3"},
-            {"title": "Dil Pardesi Ho Gaya - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Pardesi%20Ho%20Gaya%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Dil To Hai Dil", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20To%20Hai%20Dil.mp3"},
-            {"title": "Dil To Pagal Hai", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20To%20Pagal%20Hai.mp3"},
-            {"title": "Dil Tod Ke Na Ja", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Tod%20Ke%20Na%20Ja.mp3"},
-            {"title": "Dil Ye Bekarar Kyun Hai", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20Ye%20Bekarar%20Kyun%20Hai.mp3"},
-            {"title": "Dil cheez tujhe dedi f", "url": "https://archive.org/download/heartOfABrokenSoul/Dil%20cheez%20tujhe%20%20dedi%20f.mp3"},
-            {"title": "Dil Kya Kare Jub (RoyalJatt.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Dil_Kya_Kare_Jub-Shaan-www.Mp3Mad.Com.mp3"},
-            {"title": "Dilbar Mere (The Unwind Mix) - www.9xTunes.Com", "url": "https://archive.org/download/heartOfABrokenSoul/Dilbar%20Mere%20%28The%20Unwind%20Mix%29%20-%20Rahul%20Vaidya%20%28320kbps%29.mp3"},
-            {"title": "Track05", "url": "https://archive.org/download/heartOfABrokenSoul/Dilbar%20Mere%20Kab%20tak.mp3"},
-            {"title": "Dildara", "url": "https://archive.org/download/heartOfABrokenSoul/Dildara.mp3"},
-            {"title": "Dillagi Rahat Fateh Ali Khan", "url": "https://archive.org/download/heartOfABrokenSoul/Dillagi%20Rahat%20Fateh%20Ali%20Khan.mp3"},
-            {"title": "Diwani Diwani - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Diwani%20Diwani%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Do Baatein Ho Sakti Hai - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Do%20Baatein%20Ho%20Sakti%20Hai%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Do Dil Mil Rahe Hai - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Do%20Dil%20Mil%20Rahe%20Hai%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Do Dil Mil Rahe Hai", "url": "https://archive.org/download/heartOfABrokenSoul/Do%20Dil%20Mil%20Rahe%20Hai%20.mp3"},
-            {"title": "Do Pal (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Do%20Pal%28Djjohal.Com%29.mp3"},
-            {"title": "Do baatein Ho sakti", "url": "https://archive.org/download/heartOfABrokenSoul/Do%20baatein%20Ho%20sakti.mp3"},
-            {"title": "Do Anjaane Ajnabi (RoyalJatt.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Do_Anjaane_Ajnabi-Udit_Narayan-www.Mp3Mad.Com.mp3"},
-            {"title": "Do_Baatein_Ho_Sakti_Hain_-_Kumar_Sanu", "url": "https://archive.org/download/heartOfABrokenSoul/Do_Baatein_Ho_Sakti_Hain_-_Kumar_Sanu.mp3"},
-            {"title": "Dooriyan", "url": "https://archive.org/download/heartOfABrokenSoul/Dooriyan.mp3"},
-            {"title": "Dum Dum Diga Diga - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Dum%20Dum%20Diga%20Diga%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "EK Mulaqat Ho", "url": "https://archive.org/download/heartOfABrokenSoul/EK%20Mulaqat%20Ho.mp3"},
-            {"title": "EK SANAM CHAHIYE - K SANU", "url": "https://archive.org/download/heartOfABrokenSoul/EK%20SANAM%20CHAHIYE%20-%20K%20SANU.MP3"},
-            {"title": "Ek Baat Kahoon Kya Ijazat Hai (Arijit Singh)", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Baat%20Kahoon%20Kya%20Ijazat%20Hai%20%28Arijit%20Singh%29.mp3"},
-            {"title": "Ek Dil Hai", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Dil%20Hai.mp3"},
-            {"title": "Ek Din Aap Yun Humko", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Din%20Aap%20Yun%20Humko.mp3"},
-            {"title": "Ek Kadam Tera Ek Kadam Mera - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Kadam%20Tera%20Ek%20Kadam%20Mera%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ek Ladki Bheegi Bhagi Si - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Ladki%20Bheegi%20Bhagi%20Si%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ek Ladki Ko Dekha (1942 - A Love Story)", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Ladki%20Ko%20Dekha%20%281942%20-%20A%20Love%20Story%29.mp3"},
-            {"title": "Ek Ladki Ko Dekha - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Ladki%20Ko%20Dekha%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ek Ladki Ko Dekho Tho ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Ladki%20Ko%20Dekho%20Tho-Kumar%20SanuRaag.Me.mp3"},
-            {"title": "Ek Pagla Hai (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Pagla%20Hai%28Djjohal.Com%29.mp3"},
-            {"title": "Ek Taraf Uska Ghar ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20Taraf%20Uska%20Ghar-Pankaj%20Udhas__Raag.Me__.mp3"},
-            {"title": "Ek raat mein", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20raat%20mein.mp3"},
-            {"title": "Ek Taraf uska ghar", "url": "https://archive.org/download/heartOfABrokenSoul/Ek%20taraf%20uska%20ghar.mp3"},
-            {"title": "Endra Meruwa Gai (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Endra%20Meruwa%20Gai%28Djjohal.Com%29.mp3"},
-            {"title": "Fifi - Jata Kahan Hai Deewane - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Fifi%20-%20Jata%20Kahan%20Hai%20Deewane%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "GAZAB KA DIN", "url": "https://archive.org/download/heartOfABrokenSoul/GAZAB%20KA%20DIN%20.mp3"},
-            {"title": "Gali Mein Chand-Alka", "url": "https://archive.org/download/heartOfABrokenSoul/Gali%20Mein%20Chand-Alka%20.mp3"},
-            {"title": "Galiyan (Ek Villain)", "url": "https://archive.org/download/heartOfABrokenSoul/Galiyan%20%28Ek%20Villain%29.mp3"},
-            {"title": "Gerua", "url": "https://archive.org/download/heartOfABrokenSoul/Gerua.mp3"},
-            {"title": "Ghanan Ghanan - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ghanan%20Ghanan%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ghar Se Nikalte Hi @ SongsDL.com", "url": "https://archive.org/download/heartOfABrokenSoul/Ghar%20Se%20Nikalte%20Hi%20%40%20SongsDL.com.mp3"},
-            {"title": "Ghar Se Nikalte Hi ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Ghar%20Se%20Nikalte%20Hi-Udit%20NarayanRaag.Me.mp3"},
-            {"title": "Ghar Se Nikalte Hi", "url": "https://archive.org/download/heartOfABrokenSoul/Ghar%20Se%20Nikalte%20Hi.mp3"},
-            {"title": "Ghoonghat Ki Aadh Se - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ghoonghat%20Ki%20Aadh%20Se%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ghoonghat Ko Mat Khol-Pankaj Udhas", "url": "https://archive.org/download/heartOfABrokenSoul/Ghoonghat%20Ko%20Mat%20Khol-Pankaj%20Udhas.mp3"},
-            {"title": "Chingari Koi Bhadke ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Ghoonghat%20Ko%20Mat%20Khol-Pankaj%20UdhasRaag.Me.mp3"},
-            {"title": "Ghoonghat Mein Chehra - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ghoonghat%20Mein%20Chehra%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Ghoongte Mein Chanda - Songs.pk", "url": "https://archive.org/download/heartOfABrokenSoul/Ghoongte%20Mein%20Chanda%20-%20Songs.pk%20-%20320Kbps.mp3"},
-            {"title": "Jadu hai tera", "url": "https://archive.org/download/heartOfABrokenSoul/Ghulam%20-%20Jadu%20hai%20tera.mp3"},
-            {"title": "Ghum Sum Ghum Sum ::www.RAAG.ME::", "url": "https://archive.org/download/heartOfABrokenSoul/Ghum%20Sum%20Ghum%20Sum-Sukshinder%20ShindaRaag.Me.mp3"},
-            {"title": "Ghunghat Ki Aad Se", "url": "https://archive.org/download/heartOfABrokenSoul/Ghunghat%20Ki%20Aad%20Se.mp3"},
-            {"title": "01 Gori Teri", "url": "https://archive.org/download/heartOfABrokenSoul/Gori%20Teri.mp3"},
-            {"title": "Gulabi Gaal (DJJOhAL.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Gulabi%20Gaal%28Djjohal.Com%29.mp3"},
-            {"title": "Barso Re", "url": "https://archive.org/download/heartOfABrokenSoul/Guru%20-%20Barso%20Re.mp3"},
-            {"title": "Guzarish", "url": "https://archive.org/download/heartOfABrokenSoul/Guzarish.mp3"},
-            {"title": "Haal E Dil (Female) (Mp3Mad.Com)", "url": "https://archive.org/download/heartOfABrokenSoul/Haal_E_Dil_%28Female%29-Neeti_Mohan-www.Mp3Mad.Com.mp3"},
-            {"title": "K.K.", "url": "https://archive.org/download/heartOfABrokenSoul/Haan%20Tu%20Hai%20--%20K.K..mp3"},
-            {"title": "Hai Dil Bata", "url": "https://archive.org/download/heartOfABrokenSoul/Hai%20Dil%20Bata.mp3"},
-            {"title": "Haider", "url": "https://archive.org/download/heartOfABrokenSoul/Haider.mp3"},
-            {"title": "aafrin (nusrat fateh ali)", "url": "https://archive.org/download/heartOfABrokenSoul/aafrin%20%28nusrat%20fateh%20ali%29.MP3"},
-            {"title": "abhi na jao", "url": "https://archive.org/download/heartOfABrokenSoul/abhi%20na%20jao.mp3"},
-            {"title": "025 aur kya (phir bhi dil hai", "url": "https://archive.org/download/heartOfABrokenSoul/aur%20kya%20%28phir%20bhi%20dil%20hai%20hindustani%29.mp3"},
-            {"title": "003 badi mushkil hai(anjaam)", "url": "https://archive.org/download/heartOfABrokenSoul/badi%20mushkil%20hai%28anjaam%29.mp3"},
-            {"title": "bheegi bheegi raaton mein aisi barsato mein kaisa lagta hai WapFast.In", "url": "https://archive.org/download/heartOfABrokenSoul/bheegi%20bheegi%20raaton%20mein%20aisi%20barsato%20mein%20kaisa%20lagta%20hai.mp3"},
-            {"title": "02. Chalte Chalte.mp3", "url": "https://archive.org/download/heartOfABrokenSoul/chalte%20chalte.mp3"},
-            {"title": "Chand Si Mehbooba Ho", "url": "https://archive.org/download/heartOfABrokenSoul/chand%20si%20mehbooba%20ho%20meri.mp3"},
-            {"title": "No01", "url": "https://archive.org/download/heartOfABrokenSoul/chand%20sifarish.mp3"},
-            {"title": "047 chand taare tod laaoon(ye", "url": "https://archive.org/download/heartOfABrokenSoul/chand%20taare%20tod%20laaoon%28yess%20boss%29.mp3"},
-            {"title": "SAGAR JAISE AANKHON WALI", "url": "https://archive.org/download/heartOfABrokenSoul/chehra%20hai%20ya%20chand%20khila.mp3"},
-            {"title": "DIL NE DIL KO PUKARA", "url": "https://archive.org/download/heartOfABrokenSoul/chhup%20gaye%20saare%20nazare.mp3"},
-            {"title": "043 chunari chunari (biwi no1", "url": "https://archive.org/download/heartOfABrokenSoul/chunari%20chunari%20%28biwi%20no1%29.MP3"},
-            {"title": "chupana bhi nahin aata", "url": "https://archive.org/download/heartOfABrokenSoul/chupana%20bhi%20nahi%20aata%20%20%28BAZIGAR%29.mp3"},
-            {"title": "chuppana bhi nahi Aata", "url": "https://archive.org/download/heartOfABrokenSoul/chuppana%20bhi%20nahi%20Aata.mp3"},
-            {"title": "107 dheere dheere dheere(tere", "url": "https://archive.org/download/heartOfABrokenSoul/dheere%20dheere%20dheere%28tere%20bina%29.mp3"},
-            {"title": "Dheere Dheere Bol Koi Sun Na Le", "url": "https://archive.org/download/heartOfABrokenSoul/dhire%20dhire%20bol.mp3"},
-            {"title": "TRACK", "url": "https://archive.org/download/heartOfABrokenSoul/dhup%20nikalti%20hai%28krrish%29.MP3"},
-            {"title": "TRACK", "url": "https://archive.org/download/heartOfABrokenSoul/dil%20chura%20liya%28qayamat%29.MP3"},
-            {"title": "dil hai ki manta nahi", "url": "https://archive.org/download/heartOfABrokenSoul/dil%20hai%20ki%20manta%20nahi.mp3"},
-            {"title": "dil keh raha(adnan)", "url": "https://archive.org/download/heartOfABrokenSoul/dil%20keh%20raha%28adnan%29.MP3"},
-            {"title": "DIL KYA KARE", "url": "https://archive.org/download/heartOfABrokenSoul/dil%20kya%20kare%20jab%20kisi%20se.mp3"},
-            {"title": "dil kya kare", "url": "https://archive.org/download/heartOfABrokenSoul/dil%20kya%20kare.MP3"},
-            {"title": "dil tera diwana hai sanam", "url": "https://archive.org/download/heartOfABrokenSoul/dil%20tera%20diwana%20hai%20sanam.mp3"},
-            {"title": "do anjaane ajnabi", "url": "https://archive.org/download/heartOfABrokenSoul/do%20anjaane%20ajnabi.mp3"},
-            {"title": "EK AJNABEE HASEENA SE", "url": "https://archive.org/download/heartOfABrokenSoul/ek%20ajnabi%20hasina%20se.mp3"},
-            {"title": "Ek Ladki", "url": "https://archive.org/download/heartOfABrokenSoul/ek%20ladki.mp3"},
-            {"title": "Ek Pyar Ka Nagma Hai", "url": "https://archive.org/download/heartOfABrokenSoul/ek%20pyar%20ka%20nagma%20hai.mp3"},
-            {"title": "01 EK PAL KE LIYE BY K", "url": "https://archive.org/download/heartOfABrokenSoul/fir%20kya%20ho%20kya%20khabar%28ankahee%29.mp3"},
-            {"title": "TRACK", "url": "https://archive.org/download/heartOfABrokenSoul/had%20se%20v%20jyaada%28qayamat%29.MP3"}
-        ];
-
-        const genres = ["Romantic", "Sad", "Pop", "Classic", "Folk", "Duet", "Rock"];
-        const songs = rawSongList.map((song, index) => ({
-            id: index,
-            title: song.title.split(' - ')[0].split('(')[0].replace(/::www\..*::/g, '').replace(/@.*\.com/g, '').trim(),
-            artist: "Shubham",
-            url: song.url,
-            duration: `${Math.floor(Math.random() * 3) + 3}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-            album: "Top 1000 Hits",
-            genre: genres[Math.floor(Math.random() * genres.length)]
-        }));
-
-        const playlists = [
-            { id: 1, name: "Top 1000 Hits", description: "The complete collection by Shubham.", songs: songs.map(s => s.id), cover: "https://placehold.co/300x300/1DB954/FFFFFF?text=Top+Hits" },
-            { id: 2, name: "Romantic Hits", description: "Love songs by Shubham.", songs: songs.filter(s => s.genre === "Romantic").map(s => s.id), cover: "https://placehold.co/300x300/E8115B/FFFFFF?text=Romantic" },
-            { id: 3, name: "Sad Songs", description: "Emotional tracks by Shubham.", songs: songs.filter(s => s.genre === "Sad").map(s => s.id), cover: "https://placehold.co/300x300/1E3264/FFFFFF?text=Sad" },
-            { id: 4, name: "Classic Collection", description: "Timeless classics by Shubham.", songs: songs.filter(s => s.genre === "Classic").map(s => s.id), cover: "https://placehold.co/300x300/8D67AB/FFFFFF?text=Classics" },
-            { id: 5, name: "Folk Fusion", description: "Folk melodies by Shubham.", songs: songs.filter(s => s.genre === "Folk").map(s => s.id), cover: "https://placehold.co/300x300/B49164/FFFFFF?text=Folk" },
-            { id: 6, name: "Pop Party", description: "Upbeat pop tracks by Shubham.", songs: songs.filter(s => s.genre === "Pop").map(s => s.id), cover: "https://placehold.co/300x300/F037A5/FFFFFF?text=Pop" },
-        ];
-
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- DOM Elements ---
-            const audioPlayer = document.getElementById('audio-player');
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const progressBar = document.getElementById('progress-bar');
-            const progress = document.getElementById('progress');
-            const currentTimeEl = document.getElementById('current-time');
-            const totalTimeEl = document.getElementById('total-time');
-            const volumeSlider = document.getElementById('volume-slider');
-            const playerSongTitle = document.querySelector('.player-song-title');
-            const playerSongArtist = document.querySelector('.player-song-artist');
-            const playerLikeBtn = document.getElementById('player-like-btn');
-            
-            const searchInput = document.getElementById('search-input');
-            const queueBtn = document.getElementById('queue-btn');
-            const closeQueueBtn = document.getElementById('close-queue-btn');
-            const queuePanel = document.getElementById('queue-panel');
-            const queueList = document.getElementById('queue-list');
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const sidebar = document.getElementById('sidebar');
-            const navItems = document.querySelectorAll('.nav-item');
-            const mainContent = document.getElementById('main-content');
-            
-            const pageSections = {
-                home: document.getElementById('home-section'),
-                search: document.getElementById('search-section'),
-                liked: document.getElementById('liked-section'),
-                playlist: document.getElementById('playlist-view-section'),
-            };
-
-            const playlistGridContainer = document.getElementById('playlist-grid-container');
-            const searchResultsContainer = document.getElementById('search-results-container');
-            const likedSongsContainer = document.getElementById('liked-songs-container');
-            const playlistSongsContainer = document.getElementById('playlist-songs-container');
-            const playlistViewTitle = document.getElementById('playlist-view-title');
-            const playlistListSidebar = document.getElementById('playlist-list-sidebar');
-
-            // --- Audio Visualization ---
-            let audioContext, analyser, source, dataArray;
-            const canvas = document.getElementById('waveform');
-            const canvasCtx = canvas.getContext('2d');
-            
-            function initAudioVisualizer() {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    analyser = audioContext.createAnalyser();
-                    source = audioContext.createMediaElementSource(audioPlayer);
-                    source.connect(analyser);
-                    analyser.connect(audioContext.destination);
-                    analyser.fftSize = 256;
-                }
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
-                drawWaveform();
-            }
-            
-            function drawWaveform() {
-                if(!isPlaying) {
-                    canvasCtx.clearRect(0,0, canvas.width, canvas.height);
-                    return;
-                };
-                requestAnimationFrame(drawWaveform);
-                analyser.getByteFrequencyData(dataArray);
-
-                canvasCtx.fillStyle = '#181818';
-                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-                const barWidth = (canvas.width / dataArray.length) * 2;
-                let barHeight;
-                let x = 0;
-                for (let i = 0; i < dataArray.length; i++) {
-                    barHeight = dataArray[i] / 2.5;
-                    canvasCtx.fillStyle = `rgb(30, 185, 84)`;
-                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
-                }
-            }
-
-            // --- State ---
-            let currentQueue = [];
-            let currentSongIndexInQueue = 0;
-            let isPlaying = false;
-            let likedSongs = new Set(JSON.parse(localStorage.getItem('likedSongs')) || []);
-
-            // --- Display Functions ---
-            function displayPlaylists() {
-                playlistGridContainer.innerHTML = '';
-                playlists.forEach(playlist => {
-                    const card = document.createElement('div');
-                    card.className = 'playlist-card';
-                    card.dataset.playlistId = playlist.id;
-                    card.innerHTML = `
-                        <img src="${playlist.cover}" alt="${playlist.name}">
-                        <div class="playlist-title">${playlist.name}</div>
-                        <div class="playlist-desc">${playlist.description}</div>
-                    `;
-                    card.addEventListener('click', () => showPlaylistView(playlist.id));
-                    playlistGridContainer.appendChild(card);
-                });
-            }
-
-            function displaySongsAsTable(songIdArray, container) {
-                container.innerHTML = '';
-                if (songIdArray.length === 0) {
-                  container.innerHTML = '<p style="padding: 20px;">No songs found.</p>';
-                  return;
-                }
-
-                const table = document.createElement('table');
-                table.className = 'song-table';
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>TITLE</th>
-                            <th class="song-table-album">ALBUM</th>
-                            <th class="song-table-genre">GENRE</th>
-                            <th><i class="far fa-clock"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                `;
-                const tbody = table.querySelector('tbody');
-                
-                const songObjects = songIdArray.map(id => songs.find(s => s.id === id)).filter(Boolean);
-
-                songObjects.forEach((song, index) => {
-                    const row = document.createElement('tr');
-                    row.dataset.songId = song.id;
-                    row.innerHTML = `
-                        <td><span class="song-index">${index + 1}</span></td>
-                        <td>
-                            <div class="song-title-cell">
-                                <div>
-                                    <div class="song-table-title">${song.title}</div>
-                                    <div class="song-table-artist">${song.artist}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="song-table-album">${song.album}</td>
-                        <td class="song-table-genre">${song.genre}</td>
-                        <td>${song.duration}</td>
-                    `;
-                    row.addEventListener('click', () => {
-                       currentQueue = songObjects;
-                       playSong(index);
-                    });
-                    tbody.appendChild(row);
-                });
-                container.appendChild(table);
-            }
-
-            // --- Player Controls ---
-            function playSong(queueIndex) {
-                if (audioContext && audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-                if (!source) {
-                    initAudioVisualizer();
-                }
-                currentSongIndexInQueue = queueIndex;
-                const song = currentQueue[currentSongIndexInQueue];
-                audioPlayer.src = song.url;
-                audioPlayer.play().catch(e => console.error("Playback error:", e));
-                isPlaying = true;
-                updatePlayerUI();
-                drawWaveform();
-            }
-
-            function togglePlayPause() {
-                if (!currentQueue.length) return;
-                if (isPlaying) {
-                    audioPlayer.pause();
-                } else {
-                    audioPlayer.play();
-                }
-                isPlaying = !isPlaying;
-                updatePlayerUI();
-                if(isPlaying) drawWaveform();
-            }
-            
-            function playNext() {
-                if (!currentQueue.length) return;
-                let nextIndex = (currentSongIndexInQueue + 1) % currentQueue.length;
-                playSong(nextIndex);
-            }
-
-            function playPrev() {
-                 if (!currentQueue.length) return;
-                let prevIndex = (currentSongIndexInQueue - 1 + currentQueue.length) % currentQueue.length;
-                playSong(prevIndex);
-            }
-            
-            function updatePlayerUI() {
-                playPauseBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-                if (currentQueue.length > 0) {
-                    const song = currentQueue[currentSongIndexInQueue];
-                    playerSongTitle.textContent = song.title;
-                    playerSongArtist.textContent = song.artist;
-                    playerLikeBtn.classList.toggle('liked', likedSongs.has(song.id));
-                }
-                updateQueueUI();
-            }
-
-            function updateProgress() {
-                const { duration, currentTime } = audioPlayer;
-                if (duration) {
-                    const progressPercent = (currentTime / duration) * 100;
-                    progress.style.width = `${progressPercent}%`;
-                    currentTimeEl.textContent = formatTime(currentTime);
-                    if(isNaN(duration)) {
-                        totalTimeEl.textContent = "0:00";
-                    } else {
-                        totalTimeEl.textContent = formatTime(duration);
-                    }
-                }
-            }
-
-            function setProgress(e) {
-                const width = this.clientWidth;
-                const clickX = e.offsetX;
-                const duration = audioPlayer.duration;
-                if(duration) audioPlayer.currentTime = (clickX / width) * duration;
-            }
-
-            function formatTime(seconds) {
-                const minutes = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-            }
-
-            // --- User Features ---
-            function toggleLike() {
-                if (!currentQueue.length) return;
-                const songId = currentQueue[currentSongIndexInQueue].id;
-                if (likedSongs.has(songId)) {
-                    likedSongs.delete(songId);
-                } else {
-                    likedSongs.add(songId);
-                }
-                localStorage.setItem('likedSongs', JSON.stringify(Array.from(likedSongs)));
-                updatePlayerUI();
-                if(pageSections.liked.style.display === 'block') displayLikedSongs();
-            }
-            
-            function displayLikedSongs() {
-                displaySongsAsTable(Array.from(likedSongs), likedSongsContainer);
-            }
-
-            // --- Search ---
-            function handleSearch() {
-                const query = searchInput.value.toLowerCase();
-                 if(!query) {
-                    switchSection('home');
-                    return;
-                }
-                const filteredSongIds = songs
-                    .filter(song => song.title.toLowerCase().includes(query) || song.artist.toLowerCase().includes(query))
-                    .map(song => song.id);
-                
-                displaySongsAsTable(filteredSongIds, searchResultsContainer);
-                switchSection('search');
-            }
-            
-            // --- Playlist & Navigation ---
-            function renderSidebarPlaylists() {
-                playlistListSidebar.innerHTML = '';
-                 playlists.forEach(playlist => {
-                    const li = document.createElement('li');
-                    li.textContent = playlist.name;
-                    li.dataset.playlistId = playlist.id;
-                    li.addEventListener('click', () => showPlaylistView(playlist.id));
-                    playlistListSidebar.appendChild(li);
-                });
-            }
-
-            function showPlaylistView(playlistId) {
-                const playlist = playlists.find(p => p.id === playlistId);
-                if (!playlist) return;
-                playlistViewTitle.textContent = playlist.name;
-                displaySongsAsTable(playlist.songs, playlistSongsContainer);
-                switchSection('playlist');
-            }
-
-            function switchSection(sectionId) {
-                Object.values(pageSections).forEach(section => section.style.display = 'none');
-                navItems.forEach(item => item.classList.remove('active'));
-                
-                pageSections[sectionId].style.display = 'block';
-                const activeNavItem = document.querySelector(`.nav-item[data-section="${sectionId}"]`);
-                if(activeNavItem) activeNavItem.classList.add('active');
-                
-                mainContent.scrollTop = 0; // Scroll to top on page change
-            }
-
-            // --- Queue Management ---
-            function updateQueueUI() {
-                queueList.innerHTML = '';
-                currentQueue.forEach((song, index) => {
-                    const li = document.createElement('li');
-                    li.textContent = `${song.title} - ${song.artist}`;
-                    if (index === currentSongIndexInQueue) {
-                        li.style.fontWeight = 'bold';
-                        li.style.color = 'var(--primary-color)';
-                    }
-                    queueList.appendChild(li);
-                });
-            }
-            
-            // --- Event Listeners ---
-            playPauseBtn.addEventListener('click', togglePlayPause);
-            nextBtn.addEventListener('click', playNext);
-            prevBtn.addEventListener('click', playPrev);
-            audioPlayer.addEventListener('timeupdate', updateProgress);
-            audioPlayer.addEventListener('ended', playNext);
-            progressBar.addEventListener('click', setProgress);
-            volumeSlider.addEventListener('input', (e) => audioPlayer.volume = e.target.value);
-            playerLikeBtn.addEventListener('click', toggleLike);
-            searchInput.addEventListener('input', handleSearch);
-
-            mobileMenuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
-            mainContent.addEventListener('click', () => sidebar.classList.remove('open'));
-
-            queueBtn.addEventListener('click', () => queuePanel.classList.add('open'));
-            closeQueueBtn.addEventListener('click', () => queuePanel.classList.remove('open'));
-            
-            navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    const sectionId = e.currentTarget.dataset.section;
-                    if(sectionId === 'liked') displayLikedSongs();
-                    switchSection(sectionId);
-                    sidebar.classList.remove('open');
-                });
-            });
-
-            // --- Initial Load ---
-            function initializeApp() {
-                displayPlaylists();
-                renderSidebarPlaylists();
-                updatePlayerUI();
-                switchSection('home');
-            }
-
-            initializeApp();
-        });
-    </script>
+    <audio id="audioPlayer" preload="metadata"></audio>
+    <script src="script.js"></script>
 </body>
 </html>
 
